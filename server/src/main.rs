@@ -4,7 +4,12 @@ use std::{str,thread,time,io::{self,Read,Write}};
 fn handle_client(mut stream: TcpStream) -> io::Result<()>{
     let mut buf = [0;512]; // 创建buf可变数组变量，长度512byte，用来存放消息内容
     loop { // 消息读取循环
-        let bytes_read = stream.read(&mut buf)?; // 读取消息内容到buf变量中
+        // let bytes_read = stream.read(&mut buf)?; // 读取消息内容到buf变量中
+        let bytes_read = match stream.read(&mut buf){ // 读取消息内容到buf变量中（模式配置方式）
+            Ok(count) => count,
+            Err(error) => panic!("{}",error),
+        };
+
         if bytes_read == 0{ // 如果读取内容长度为0(即没有内容)，则不处理立即返回
             return Ok(()); // 返回Result类型的Ok空值
         }
